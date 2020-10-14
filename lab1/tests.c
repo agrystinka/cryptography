@@ -107,7 +107,81 @@ long long non_linear_test(uint8_t *seq, int size)
  * return linear complexity of subsequence
  * (the number of previous bits that have impact on current bit).
  */
-long long linear_test(uint8_t *seq, int size)
-{
 
+//void compress_rule(bool *rule, uint32_t size, uint8_t * rule_c)
+
+uint32_t linear_test(uint8_t *seq, uint32_t size, bool *rule)
+{
+    uint32_t L = 0; //linear complexity
+    int x = 1;
+
+    uint32_t rulesize = 1;
+    for(int i = 0; i < size* BYTE_SIZE / 2; i++)
+        rule[i] = false;
+    rule[0] = true; //C(D) = 1
+
+    uint32_t addpolsize = 1;
+    bool *addpol = malloc((size * BYTE_SIZE / 2) * (sizeof(bool))); //it is B(D), same size as rule
+    for(int i = 0; i < size/2; i++)
+        addpol[i] = false;
+    addpol[0] = true; //B(D) = 1
+
+    for(long i = 0; i < size * BYTE_SIZE; i++){ //counter (num of current bit of sequence)
+        //find current bit d
+        bool d = check_bit(seq[i / BYTE_SIZE], i % BYTE_SIZE);
+
+        for(int j = 1; j < rulesize; j++)
+            if(rule[j])
+                if(d != check_bit(seq[(i - j) / BYTE_SIZE], (i - j) % BYTE_SIZE))
+                    d = true;
+                else
+                    d = false;
+
+        if(d == false) //step 3
+            x++; //C_D is correct
+        else if(d == true)
+            if(2 * L > i){ //step 4
+                //correct polinomial without increasing L
+                int newsize1 = 0;
+                for(int j = 0; j < rulesize + x; j++)
+                    if(j >= x)
+                        if(addpol[j - x] == rule[j]){
+                            rule[j] = false;
+                        }else{
+                            rule[j] = true;
+                            newsize1 = j + 1;
+                        }
+                rulesize = newsize1;
+                x++;
+            }
+            else{ //step 5
+                //correct polinomial with increasing L
+                //write C(D) -> tmp
+                bool *tmp = malloc((rulesize) * (sizeof(bool)));
+                uint32_t tmpsize = rulesize;
+                for(int j = 0; j < rulesize; j++)
+                    tmp[j] = rule[j];
+
+                int newsize2 = 0;
+                for(int j = 0; j < rulesize + x; j++)
+                    if(j >= x)
+                        if(addpol[j - x] == rule[j]){
+                            rule[j] = false;
+                        }else{
+                            rule[j] = true;
+                            newsize2 = j + 1;
+                        }
+                rulesize = newsize2;
+                //write tmp -> B(D)
+                for(int j = 0; j < tmpsize; j++)
+                    addpol[j] = tmp[j];
+
+                addpolsize = tmpsize;
+
+                L = i + 1 - L;
+                x = 1;
+        }
+
+    }
+    return L;
 }

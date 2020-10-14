@@ -26,10 +26,21 @@ int main(void)
     printf("Diff frequency test: %.6f\n", diff_freq_test(&randseq[0], SEQ_SIZE));
     printf("Non-linear complexity: %d\n", non_linear_test(&randseq[0], SEQ_SIZE));
 
+    bool rule[SEQ_SIZE * BYTE_SIZE / 2];
+    printf("Linear complexity: %d\n", linear_test(&randseq[0], SEQ_SIZE, &rule));
+
     return 0;
 }
 
-
+/**
+ * table_cipher() - generate pseudo random sequence.
+ * @uint8_t *table: table.
+ * @uint32_t tsize: size of table in bytes.
+ * @uint8_t *result: pseudo random sequence.
+ * @uint32_t rsize: size of result in bytes.
+ *
+ * Return: void.
+ */
 void table_cipher(uint8_t *table, uint32_t tsize, uint8_t *result, uint32_t rsize)
 {
     for(int j = 0; j< rsize; j++){
@@ -40,7 +51,17 @@ void table_cipher(uint8_t *table, uint32_t tsize, uint8_t *result, uint32_t rsiz
     }
 }
 
-
+/**
+ * table_cipher_bit() - get one bit of pseudo random sequence.
+ * @uint8_t *table: table.
+ * @uint32_t size: size of table in bytes.
+ *
+ * Return bit stored in table by pseudo random address, got as composition of lsfr outpu
+ *
+ * Return: bool.
+ *
+ * Return true if generator output is 1, false if lsfr output is 0.
+ */
 bool table_cipher_bit(uint8_t *table, uint32_t size)
 {
     uint32_t addr = get_address();
@@ -50,6 +71,15 @@ bool table_cipher_bit(uint8_t *table, uint32_t size)
     return false;
 }
 
+/**
+ * get_address() - get one bit of pseudo random sequence.
+ *
+ * Generate address which is composition of 12 lsfr outputs.
+ *
+ * Return: uint32_t.
+ *
+ * Return address.
+ */
 uint32_t get_address(void)
 {
     //12 lsfr 8+ bitness
@@ -87,7 +117,17 @@ uint32_t get_address(void)
     return address;
 }
 
-
+/**
+ * get_random() - get pseudo random sequence usinr rand().
+ * @uint8_t *table: table.
+ * @uint32_t size: size of table in bytes.
+ *
+ * Generate address which is composition of 12 lsfr outputs.
+ *
+ * Return: uint32_t.
+ *
+ * Return address.
+ */
 void get_random(uint8_t *table, uint32_t size)
 {
     srand(time(NULL));

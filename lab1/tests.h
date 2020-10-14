@@ -48,4 +48,4 @@ bool check_bit(uint8_t num, uint8_t bit_num);
  * return non-linear complexity of subsequence
  * (the number of previous bits that have impact on current bit).
  */
-long long non_linear_test(uint8_t *seq, int size);
+uint32_t linear_test(uint8_t *seq, uint32_t size, bool *rule);

@@ -22,7 +22,7 @@ bool lsfr_1_32_r(uint32_t rule, uint8_t bitness, uint32_t *seed);
  * @uint32_t seed: initial state of lsfr.
  *
  * LSFR for x Galois polinomial.
- * Return: vioi.
+ * Return: viod.
  *
  */
 
