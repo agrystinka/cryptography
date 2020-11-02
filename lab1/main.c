@@ -22,12 +22,18 @@ int main(void)
     uint8_t randseq[SEQ_SIZE];
     table_cipher(&table[0], 512, &randseq[0], SEQ_SIZE);
 
+    printf("Frequency table test: %.6f\n\n", freq_test(&table[0], 512));
+
     printf("Frequency test: %.6f\n", freq_test(&randseq[0], SEQ_SIZE));
     printf("Diff frequency test: %.6f\n", diff_freq_test(&randseq[0], SEQ_SIZE));
-    printf("Non-linear complexity: %d\n", non_linear_test(&randseq[0], SEQ_SIZE));
+    //printf("Non-linear complexity: %d\n", non_linear_test(&randseq[0], SEQ_SIZE));
 
-    bool rule[SEQ_SIZE * BYTE_SIZE / 2];
-    printf("Linear complexity: %d\n", linear_test(&randseq[0], SEQ_SIZE, &rule));
+    // bool rule[SEQ_SIZE * BYTE_SIZE];
+    // printf("Linear complexity: %d\n", linear_test(&randseq[0], SEQ_SIZE, &rule));
+    //
+    // uint8_t seq[2] = {0xac, 0x8f};
+    // bool rule[2 * BYTE_SIZE / 2];
+    // printf("Linear complexity: %d\n", linear_test(&seq[0], 2, &rule));
 
     return 0;
 }
@@ -133,4 +139,7 @@ void get_random(uint8_t *table, uint32_t size)
     srand(time(NULL));
     for(int i = 0; i < size; i++)
         table[i] = rand();
+
+    // for(int i = 0; i < size; i++)
+    //     table[i] = 0x55;
 }
